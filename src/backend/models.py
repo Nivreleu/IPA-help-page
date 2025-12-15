@@ -45,6 +45,8 @@ class UserKriterium(db.Model):
     __tablename__ = "User_Kriterium"
 
     id = db.Column(db.Integer, primary_key=True)
-    userId = db.Column(db.Integer)
+    userId = db.Column(db.Integer, nullable=False)
+    kriteriumId = db.Column(db.Text)
     anforderungId = db.Column(db.Integer)
     isComplete = db.Column(db.Boolean)
+    comment = db.Column(db.Text)
