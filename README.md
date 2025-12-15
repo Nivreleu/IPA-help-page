@@ -1,11 +1,11 @@
 # IPA-help-page
 ## Deployment
 ### Frontend
-Angular (Vercel)
+Angular ([Vercel](https://vercel.com))
 ### Backend
-Python (Render.com) 
+Python ([Render](https://dashboard.render.com/)) 
 ### DB
-PostgresSQL (supabase.com)
+PostgresSQL ([supabase](https://supabase.com/))
 
 ## Backend
 Disclamer: 100% of the Backend is AI generated
