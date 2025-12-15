@@ -15,20 +15,80 @@ def create_app():
 
 app = create_app()
 
+# ------------------------
+# GET - All Users
+# ------------------------
 @app.route("/users", methods=["GET"])
-def get_users():
+def get_all_users():
     users = User.query.all()
-    return jsonify([u.to_dict() for u in users])
+    return jsonify([u.to_dict() for u in users]), 200
 
+
+# ------------------------
+# GET - User by ID
+# ------------------------
+@app.route("/users/<int:user_id>", methods=["GET"])
+def get_user_by_id(user_id):
+    user = User.query.get(user_id)
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify(user.to_dict()), 200
+
+
+# ------------------------
+# POST - Create User
+# ------------------------
 @app.route("/users", methods=["POST"])
 def create_user():
     data = request.json
+
+    if not data or "username" not in data:
+        return jsonify({"error": "Username is required"}), 400
 
     user = User(username=data["username"])
     db.session.add(user)
     db.session.commit()
 
     return jsonify(user.to_dict()), 201
+
+
+# ------------------------
+# PUT - Update User by ID
+# ------------------------
+@app.route("/users/<int:user_id>", methods=["PUT"])
+def update_user(user_id):
+    user = User.query.get(user_id)
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data = request.json
+
+    if "username" in data:
+        user.username = data["username"]
+
+    db.session.commit()
+
+    return jsonify(user.to_dict()), 200
+
+
+# ------------------------
+# DELETE - Delete User by ID
+# ------------------------
+@app.route("/users/<int:user_id>", methods=["DELETE"])
+def delete_user(user_id):
+    user = User.query.get(user_id)
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    db.session.delete(user)
+    db.session.commit()
+
+    return jsonify({"message": "User deleted"}), 200
+
 
 if __name__ == "__main__":
     app.run(debug=True)
