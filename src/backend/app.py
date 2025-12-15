@@ -139,6 +139,51 @@ def get_kriterien_for_user(username):
 
     return jsonify(response), 200
 
+@app.route(
+    "/users/<username>/anforderungen/<int:anforderung_id>",
+    methods=["PUT"]
+)
+def update_anforderung_status(username, anforderung_id):
+    data = request.json
+
+    if not data or "isComplete" not in data:
+        return jsonify({"error": "isComplete is required"}), 400
+
+    # 1️⃣ User finden
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    # 2️⃣ Anforderung prüfen
+    anforderung = Anforderung.query.get(anforderung_id)
+    if not anforderung:
+        return jsonify({"error": "Anforderung not found"}), 404
+
+    # 3️⃣ User_Kriterium Eintrag suchen
+    user_kriterium = UserKriterium.query.filter_by(
+        userId=user.id,
+        anforderungId=anforderung.id
+    ).first()
+
+    # 4️⃣ Neu erstellen oder updaten
+    if not user_kriterium:
+        user_kriterium = UserKriterium(
+            userId=user.id,
+            anforderungId=anforderung.id,
+            isComplete=data["isComplete"]
+        )
+        db.session.add(user_kriterium)
+    else:
+        user_kriterium.isComplete = data["isComplete"]
+
+    db.session.commit()
+
+    return jsonify({
+        "userId": user.id,
+        "username": user.username,
+        "anforderungId": anforderung.id,
+        "isComplete": user_kriterium.isComplete
+    }), 200
 
 
 if __name__ == "__main__":

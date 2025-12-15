@@ -6,6 +6,13 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.Text, nullable=False)
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "username": self.username
+        }
+
+
 
 class Kriterium(db.Model):
     __tablename__ = "Kriterium"
