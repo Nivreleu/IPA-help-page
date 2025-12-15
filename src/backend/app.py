@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+
 from config import Config
 from db import db
 from models import (
@@ -10,6 +11,10 @@ from models import (
     UserKriterium
 )
 
+# ------------------------
+# App Setup
+# ------------------------
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -19,39 +24,32 @@ def create_app():
 
     return app
 
+
 app = create_app()
 
-# ------------------------
-# GET - All Users
-# ------------------------
+# ============================================================
+# USERS
+# ============================================================
+
 @app.route("/users", methods=["GET"])
 def get_all_users():
     users = User.query.all()
     return jsonify([u.to_dict() for u in users]), 200
 
 
-# ------------------------
-# GET - User by ID
-# ------------------------
 @app.route("/users/<int:user_id>", methods=["GET"])
 def get_user_by_id(user_id):
     user = User.query.get(user_id)
-
     if not user:
         return jsonify({"error": "User not found"}), 404
-
     return jsonify(user.to_dict()), 200
 
 
-# ------------------------
-# POST - Create User
-# ------------------------
 @app.route("/users", methods=["POST"])
 def create_user():
     data = request.json
-
     if not data or "username" not in data:
-        return jsonify({"error": "Username is required"}), 400
+        return jsonify({"error": "username is required"}), 400
 
     user = User(username=data["username"])
     db.session.add(user)
@@ -60,45 +58,24 @@ def create_user():
     return jsonify(user.to_dict()), 201
 
 
-# ------------------------
-# PUT - Update User by ID
-# ------------------------
-@app.route("/users/<int:user_id>", methods=["PUT"])
-def update_user(user_id):
-    user = User.query.get(user_id)
-
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-
-    data = request.json
-
-    if "username" in data:
-        user.username = data["username"]
-
-    db.session.commit()
-
-    return jsonify(user.to_dict()), 200
-
-
-# ------------------------
-# DELETE - Delete User by ID
-# ------------------------
 @app.route("/users/<int:user_id>", methods=["DELETE"])
 def delete_user(user_id):
     user = User.query.get(user_id)
-
     if not user:
         return jsonify({"error": "User not found"}), 404
 
     db.session.delete(user)
     db.session.commit()
-
     return jsonify({"message": "User deleted"}), 200
+
+
+# ============================================================
+# KRITERIEN + ANFORDERUNGEN (USER-SPEZIFISCH)
+# ============================================================
 
 @app.route("/kriterien/<username>", methods=["GET"])
 def get_kriterien_for_user(username):
     user = User.query.filter_by(username=username).first()
-
     if not user:
         return jsonify({"error": "User not found"}), 404
 
@@ -124,7 +101,8 @@ def get_kriterien_for_user(username):
                 "id": anforderung.id,
                 "number": anforderung.number,
                 "text": anforderung.text,
-                "isComplete": user_status.isComplete if user_status else False
+                "isComplete": user_status.isComplete if user_status else False,
+                "comment": user_status.comment if user_status else None
             })
 
         response.append({
@@ -139,42 +117,45 @@ def get_kriterien_for_user(username):
 
     return jsonify(response), 200
 
+
+# ============================================================
+# UPDATE ANFORDERUNG STATUS + COMMENT (PRO USER)
+# ============================================================
+
 @app.route(
     "/users/<username>/anforderungen/<int:anforderung_id>",
     methods=["PUT"]
 )
 def update_anforderung_status(username, anforderung_id):
     data = request.json
+    if not data:
+        return jsonify({"error": "Request body required"}), 400
 
-    if not data or "isComplete" not in data:
-        return jsonify({"error": "isComplete is required"}), 400
-
-    # 1️⃣ User finden
     user = User.query.filter_by(username=username).first()
     if not user:
         return jsonify({"error": "User not found"}), 404
 
-    # 2️⃣ Anforderung prüfen
     anforderung = Anforderung.query.get(anforderung_id)
     if not anforderung:
         return jsonify({"error": "Anforderung not found"}), 404
 
-    # 3️⃣ User_Kriterium Eintrag suchen
     user_kriterium = UserKriterium.query.filter_by(
         userId=user.id,
         anforderungId=anforderung.id
     ).first()
 
-    # 4️⃣ Neu erstellen oder updaten
     if not user_kriterium:
         user_kriterium = UserKriterium(
             userId=user.id,
-            anforderungId=anforderung.id,
-            isComplete=data["isComplete"]
+            anforderungId=anforderung.id
         )
         db.session.add(user_kriterium)
-    else:
+
+    if "isComplete" in data:
         user_kriterium.isComplete = data["isComplete"]
+
+    if "comment" in data:
+        user_kriterium.comment = data["comment"]
 
     db.session.commit()
 
@@ -182,9 +163,14 @@ def update_anforderung_status(username, anforderung_id):
         "userId": user.id,
         "username": user.username,
         "anforderungId": anforderung.id,
-        "isComplete": user_kriterium.isComplete
+        "isComplete": user_kriterium.isComplete,
+        "comment": user_kriterium.comment
     }), 200
 
+
+# ============================================================
+# START
+# ============================================================
 
 if __name__ == "__main__":
     app.run(debug=True)
