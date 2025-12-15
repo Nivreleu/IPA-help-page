@@ -11,9 +11,9 @@ from models import (
     UserKriterium
 )
 
-# ------------------------
-# App Setup
-# ------------------------
+# ============================================================
+# APP SETUP
+# ============================================================
 
 def create_app():
     app = Flask(__name__)
@@ -37,14 +37,6 @@ def get_all_users():
     return jsonify([u.to_dict() for u in users]), 200
 
 
-@app.route("/users/<int:user_id>", methods=["GET"])
-def get_user_by_id(user_id):
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-    return jsonify(user.to_dict()), 200
-
-
 @app.route("/users", methods=["POST"])
 def create_user():
     data = request.json
@@ -58,19 +50,8 @@ def create_user():
     return jsonify(user.to_dict()), 201
 
 
-@app.route("/users/<int:user_id>", methods=["DELETE"])
-def delete_user(user_id):
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-
-    db.session.delete(user)
-    db.session.commit()
-    return jsonify({"message": "User deleted"}), 200
-
-
 # ============================================================
-# KRITERIEN + ANFORDERUNGEN (USER-SPEZIFISCH)
+# KRITERIEN + ANFORDERUNGEN (COMMENT PRO KRITERIUM)
 # ============================================================
 
 @app.route("/kriterien/<username>", methods=["GET"])
@@ -83,6 +64,20 @@ def get_kriterien_for_user(username):
     response = []
 
     for kriterium in kriterium_list:
+
+        # ----------------------------------------------------
+        # USER-KOMMENTAR PRO KRITERIUM
+        # ----------------------------------------------------
+        user_kriterium = UserKriterium.query.filter_by(
+            userId=user.id,
+            kriteriumId=kriterium.id
+        ).first()
+
+        comment = user_kriterium.comment if user_kriterium else ""
+
+        # ----------------------------------------------------
+        # ANFORDERUNGEN
+        # ----------------------------------------------------
         links = KriteriumAnforderung.query.filter_by(
             kriteriumId=kriterium.id
         ).all()
@@ -92,7 +87,7 @@ def get_kriterien_for_user(username):
         for link in links:
             anforderung = Anforderung.query.get(link.anforderungId)
 
-            user_status = UserKriterium.query.filter_by(
+            status = UserKriterium.query.filter_by(
                 userId=user.id,
                 anforderungId=anforderung.id
             ).first()
@@ -101,8 +96,7 @@ def get_kriterien_for_user(username):
                 "id": anforderung.id,
                 "number": anforderung.number,
                 "text": anforderung.text,
-                "isComplete": user_status.isComplete if user_status else False,
-                "comment": user_status.comment if user_status else None
+                "isComplete": status.isComplete if status else False
             })
 
         response.append({
@@ -112,6 +106,7 @@ def get_kriterien_for_user(username):
             "minG1": kriterium.minG1,
             "minG2": kriterium.minG2,
             "minG3": kriterium.minG3,
+            "comment": comment,
             "anforderungen": anforderungen_response
         })
 
@@ -119,7 +114,7 @@ def get_kriterien_for_user(username):
 
 
 # ============================================================
-# UPDATE ANFORDERUNG STATUS + COMMENT (PRO USER)
+# UPDATE ANFORDERUNG STATUS (PRO USER)
 # ============================================================
 
 @app.route(
@@ -128,8 +123,8 @@ def get_kriterien_for_user(username):
 )
 def update_anforderung_status(username, anforderung_id):
     data = request.json
-    if not data:
-        return jsonify({"error": "Request body required"}), 400
+    if not data or "isComplete" not in data:
+        return jsonify({"error": "isComplete is required"}), 400
 
     user = User.query.filter_by(username=username).first()
     if not user:
@@ -139,32 +134,70 @@ def update_anforderung_status(username, anforderung_id):
     if not anforderung:
         return jsonify({"error": "Anforderung not found"}), 404
 
-    user_kriterium = UserKriterium.query.filter_by(
+    entry = UserKriterium.query.filter_by(
         userId=user.id,
         anforderungId=anforderung.id
     ).first()
 
-    if not user_kriterium:
-        user_kriterium = UserKriterium(
+    if not entry:
+        entry = UserKriterium(
             userId=user.id,
-            anforderungId=anforderung.id
+            anforderungId=anforderung.id,
+            isComplete=data["isComplete"]
         )
-        db.session.add(user_kriterium)
-
-    if "isComplete" in data:
-        user_kriterium.isComplete = data["isComplete"]
-
-    if "comment" in data:
-        user_kriterium.comment = data["comment"]
+        db.session.add(entry)
+    else:
+        entry.isComplete = data["isComplete"]
 
     db.session.commit()
 
     return jsonify({
-        "userId": user.id,
-        "username": user.username,
         "anforderungId": anforderung.id,
-        "isComplete": user_kriterium.isComplete,
-        "comment": user_kriterium.comment
+        "isComplete": entry.isComplete
+    }), 200
+
+
+# ============================================================
+# UPDATE KRITERIUM COMMENT (PRO USER)
+# ============================================================
+
+@app.route(
+    "/users/<username>/kriterien/<kriterium_id>/comment",
+    methods=["PUT"]
+)
+def update_kriterium_comment(username, kriterium_id):
+    data = request.json
+    if not data or "comment" not in data:
+        return jsonify({"error": "comment is required"}), 400
+
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    kriterium = Kriterium.query.get(kriterium_id)
+    if not kriterium:
+        return jsonify({"error": "Kriterium not found"}), 404
+
+    entry = UserKriterium.query.filter_by(
+        userId=user.id,
+        kriteriumId=kriterium.id
+    ).first()
+
+    if not entry:
+        entry = UserKriterium(
+            userId=user.id,
+            kriteriumId=kriterium.id,
+            comment=data["comment"]
+        )
+        db.session.add(entry)
+    else:
+        entry.comment = data["comment"]
+
+    db.session.commit()
+
+    return jsonify({
+        "kriteriumId": kriterium.id,
+        "comment": entry.comment
     }), 200
 
 
