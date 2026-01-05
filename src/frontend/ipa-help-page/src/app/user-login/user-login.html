@@ -1,0 +1,15 @@
+<section class="user-login">
+  <h2>Enter your username:</h2>
+
+  <label for="username">Username</label>
+  <input
+    #user
+    type="text"
+    id="username"
+    name="username"
+    placeholder="e.g. caroline"
+    autocomplete="off"
+    (keydown.space)="$event.preventDefault()"
+    (keyup.enter)="goToOverview(user.value)"
+  >
+</section>

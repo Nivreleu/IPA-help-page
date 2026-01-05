@@ -1,9 +1,14 @@
 <section class="header">
   <h1 class="header__title">IPA Help Page</h1>
-  <nav class="header__nav">
+
+  <nav class="header__nav" *ngIf="username">
     <ul class="header__nav-list">
-      <li class="header__nav-item"><a routerLink="/">Kriterien</a></li>
-      <li class="header__nav-item"><a routerLink="/grade">Notenberechnung</a></li>
+      <li class="header__nav-item">
+        <a [routerLink]="['/overview', username]">Kriterien</a>
+      </li>
+      <li class="header__nav-item">
+        <a [routerLink]="['/grade', username]">Notenberechnung</a>
+      </li>
     </ul>
   </nav>
 </section>
