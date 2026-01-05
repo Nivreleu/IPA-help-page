@@ -31,6 +31,10 @@ app = create_app()
 # HEALTH
 # ============================================================
 
+@app.get("/")
+def root():
+    return "OK", 200
+
 @app.route("/health", methods=["GET"])
 def health():
     return jsonify({"ok": True}), 200
