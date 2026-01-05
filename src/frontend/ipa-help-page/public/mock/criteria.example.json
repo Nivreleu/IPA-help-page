@@ -1,0 +1,92 @@
+[
+  {
+    "id": "A01",
+    "name": "BEISPIEL: Kriterium 1",
+    "description": "BEISPIELBESCHREIBUNG fuer Kriterium 1",
+    "minG1": 1,
+    "minG2": 2,
+    "minG3": 3,
+    "anforderungen": [
+      {
+        "id": 1,
+        "number": 1,
+        "text": "BEISPIEL: Erste Anforderung",
+        "isComplete": false
+      },
+      {
+        "id": 2,
+        "number": 2,
+        "text": "BEISPIEL: Zweite Anforderung",
+        "isComplete": false
+      },
+      {
+        "id": 3,
+        "number": 3,
+        "text": "BEISPIEL: Dritte Anforderung",
+        "isComplete": false
+      }
+    ]
+  },
+  {
+    "id": "A02",
+    "name": "BEISPIEL: Kriterium 2",
+    "description": "BEISPIELBESCHREIBUNG fuer Kriterium 2",
+    "minG1": 1,
+    "minG2": 2,
+    "minG3": 3,
+    "anforderungen": [
+      {
+        "id": 1,
+        "number": 1,
+        "text": "BEISPIEL: Erste Anforderung",
+        "isComplete": false
+      },
+      {
+        "id": 2,
+        "number": 2,
+        "text": "BEISPIEL: Zweite Anforderung",
+        "isComplete": false
+      },
+      {
+        "id": 3,
+        "number": 3,
+        "text": "BEISPIEL: Dritte Anforderung",
+        "isComplete": false
+      },
+      {
+        "id": 4,
+        "number": 4,
+        "text": "BEISPIEL: Vierte Anforderung",
+        "isComplete": false
+      }
+    ]
+  },
+  {
+    "id": "A03",
+    "name": "BEISPIEL: Kriterium 3",
+    "description": "BEISPIELBESCHREIBUNG fuer Kriterium 3",
+    "minG1": 1,
+    "minG2": 2,
+    "minG3": 3,
+    "anforderungen": [
+      {
+        "id": 1,
+        "number": 1,
+        "text": "BEISPIEL: Erste Anforderung",
+        "isComplete": false
+      },
+      {
+        "id": 2,
+        "number": 2,
+        "text": "BEISPIEL: Zweite Anforderung",
+        "isComplete": false
+      },
+      {
+        "id": 3,
+        "number": 3,
+        "text": "BEISPIEL: Dritte Anforderung",
+        "isComplete": false
+      }
+    ]
+  }
+]
