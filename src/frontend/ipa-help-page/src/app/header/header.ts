@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {NavigationEnd, Router, RouterLink} from '@angular/router';
-import { filter } from 'rxjs/operators';
-import {NgIf} from '@angular/common';
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -10,7 +9,6 @@ import {NgIf} from '@angular/common';
   styleUrl: './header.scss',
   imports: [
     RouterLink,
-    NgIf
   ]
 })
 export class Header {
