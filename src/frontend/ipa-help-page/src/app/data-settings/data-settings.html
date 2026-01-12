@@ -1,0 +1,66 @@
+<article class="ipa-settings-card">
+  <h2 class="ipa-settings-card__title">Personendaten</h2>
+  <p class="ipa-settings-card__desc">
+    Erfassen der Personendaten für die IPA.
+  </p>
+
+  <div class="ipa-settings-card__divider"></div>
+
+  <form class="ipa-settings-card__form" (ngSubmit)="savePersonData()" #f="ngForm">
+    <div class="ipa-settings-card__grid">
+      <label class="ipa-settings-card__field">
+        <span class="ipa-settings-card__label">Name</span>
+        <input
+          class="ipa-settings-card__input"
+          name="lastName"
+          required
+          [(ngModel)]="model.lastName"
+        />
+      </label>
+
+      <label class="ipa-settings-card__field">
+        <span class="ipa-settings-card__label">Vorname</span>
+        <input
+          class="ipa-settings-card__input"
+          name="firstName"
+          required
+          [(ngModel)]="model.firstName"
+        />
+      </label>
+
+      <label class="ipa-settings-card__field ipa-settings-card__field--full">
+        <span class="ipa-settings-card__label">Thema der Arbeit</span>
+        <input
+          class="ipa-settings-card__input"
+          name="topic"
+          required
+          [(ngModel)]="model.topic"
+        />
+      </label>
+
+      <label class="ipa-settings-card__field">
+        <span class="ipa-settings-card__label">Datum der Abgabe</span>
+        <input
+          class="ipa-settings-card__input"
+          type="date"
+          name="dueDate"
+          required
+          [(ngModel)]="model.dueDate"
+        />
+      </label>
+    </div>
+
+    <div class="ipa-settings-card__actions">
+      <button
+        class="ipa-settings-card__submit"
+        type="submit"
+      >
+        {{ isSaving() ? 'Speichern…' : 'Speichern' }}
+      </button>
+
+      @if (showSuccess()) {
+        <div class="ipa-settings-card__success">Gespeichert</div>
+      }
+    </div>
+  </form>
+</article>
