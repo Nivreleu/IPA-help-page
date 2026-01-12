@@ -1,0 +1,47 @@
+<article class="criterion-card">
+  <h2 class="criterion-card__title">{{ criterion?.name }}</h2>
+  <p class="criterion-card__desc">{{ criterion?.description }}</p>
+
+  <div class="criterion-card__mins">
+    <span>G1: {{ criterion?.minG1 }}</span>
+    <span>G2: {{ criterion?.minG2 }}</span>
+    <span>G3: {{ criterion?.minG3 }}</span>
+  </div>
+
+  <div class="criterion-card__divider"></div>
+
+  <ul class="criterion-card__req-list">
+    @for (req of criterion?.anforderungen ?? []; track req.id) {
+      <li class="criterion-card__req-item">
+        <label class="criterion-card__req-label">
+          <input
+            class="criterion-card__checkbox"
+            type="checkbox"
+          >
+          <span class="criterion-card__req-text">
+            <span class="criterion-card__req-number">{{ req.number }}.</span>
+            {{ req.text }}
+          </span>
+        </label>
+      </li>
+    }
+  </ul>
+  <div>
+  <textarea
+    class="criterion-card__comment"
+    placeholder="Kommentar"
+    [(ngModel)]="comment"
+  ></textarea>
+
+    <button
+      class="criterion-card__submit"
+      (click)="saveComment()"
+    >
+      Speichern
+    </button>
+
+    @if (showSuccess()) {
+      <div class="criterion-card__success">Kommentar gespeichert</div>
+    }
+  </div>
+</article>

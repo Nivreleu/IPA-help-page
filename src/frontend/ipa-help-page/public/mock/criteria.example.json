@@ -34,6 +34,7 @@
     "minG1": 1,
     "minG2": 2,
     "minG3": 3,
+    "minG4": 4,
     "anforderungen": [
       {
         "id": 1,
