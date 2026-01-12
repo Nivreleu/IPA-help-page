@@ -1,0 +1,135 @@
+.ipa-settings-card {
+  background-color: #567e29;
+  color: #ffffff;
+
+  margin: 16px 20px;
+  padding: 20px;
+
+  border-radius: 16px;
+  box-shadow: 0 6px 18px #00000026;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ipa-settings-card__title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.ipa-settings-card__desc {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: #ffffffcc;
+}
+
+.ipa-settings-card__divider {
+  height: 1px;
+  background-color: #ffffff1f;
+  margin: 4px 0;
+}
+
+/* Form */
+.ipa-settings-card__form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ipa-settings-card__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.ipa-settings-card__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  background-color: #ffffff12;
+  border: 1px solid #ffffff1f;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.ipa-settings-card__field--full {
+  grid-column: 1 / -1;
+}
+
+.ipa-settings-card__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffffcc;
+}
+
+/* Inputs */
+.ipa-settings-card__input {
+  border: 1px solid #ffffff1f;
+  background-color: #ffffff1f;
+  color: #ffffff;
+
+  border-radius: 10px;
+  padding: 10px 12px;
+
+  outline: none;
+}
+
+.ipa-settings-card__input::placeholder {
+  color: #ffffff99;
+}
+
+.ipa-settings-card__input:focus {
+  border-color: #ffffff66;
+  background-color: #ffffff26;
+}
+
+/* Actions */
+.ipa-settings-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ipa-settings-card__submit {
+  border: 1px solid #ffffff1f;
+  background-color: #ffffff1f;
+  color: #ffffff;
+
+  padding: 10px 14px;
+  border-radius: 12px;
+
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ipa-settings-card__submit:hover {
+  background-color: #ffffff26;
+}
+
+.ipa-settings-card__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Success */
+.ipa-settings-card__success {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+  color: #ffffff;
+  background-color: #ffffff12;
+  border: 1px solid #ffffff1f;
+  border-radius: 10px;
+  width: fit-content;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .ipa-settings-card__grid {
+    grid-template-columns: 1fr;
+  }
+}
