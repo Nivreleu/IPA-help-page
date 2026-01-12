@@ -1,1 +1,12 @@
-<p>criteria-overview works!</p>
+<section class="criteria-overview">
+  @if (isLoading()) {
+    <div class="loading">Laedt Kriterien…</div>
+  } @else if (criteria().length === 0) {
+    <div class="loading">Keine Kriterien gefunden.</div>
+  } @else {
+    @for (c of criteria(); track c.id) {
+      <app-criterion-card [criterion]="c"></app-criterion-card>
+    }
+  }
+</section>
+
