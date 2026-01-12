@@ -104,3 +104,50 @@
 .criterion-card__comment{
   width: 100%;
 }
+
+.criterion-card__grade-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.criterion-card__grade-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffffcc;
+  margin-right: 2px;
+}
+
+.criterion-card__grade {
+  background-color: #ffffff1f;
+  border: 1px solid #ffffff1f;
+  padding: 6px 10px;
+  border-radius: 10px;
+
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.criterion-card__grade:hover {
+  background-color: #ffffff26;
+}
+
+.criterion-card__grade.active {
+  background-color: #ffffff;
+  color: #567e29;
+}
+
+.criterion-card__grade-current {
+  background-color: #ffffff12;
+  border: 1px solid #ffffff1f;
+  padding: 6px 10px;
+  border-radius: 10px;
+
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffffcc;
+}

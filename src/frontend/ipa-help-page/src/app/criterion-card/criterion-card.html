@@ -8,16 +8,61 @@
     <span>G3: {{ criterion?.minG3 }}</span>
   </div>
 
+  <!-- NEU: Auswahl erreichte Guetestufe -->
+  <div class="criterion-card__grade-row">
+    <span class="criterion-card__grade-label">Erreicht:</span>
+
+    <button
+      type="button"
+      class="criterion-card__grade"
+      (click)="setGuetestufe('G1')"
+      [class.active]="getGuetestufe() === 'G1'"
+    >
+      G1
+    </button>
+
+    <button
+      type="button"
+      class="criterion-card__grade"
+      (click)="setGuetestufe('G2')"
+      [class.active]="getGuetestufe() === 'G2'"
+    >
+      G2
+    </button>
+
+    <button
+      type="button"
+      class="criterion-card__grade"
+      (click)="setGuetestufe('G3')"
+      [class.active]="getGuetestufe() === 'G3'"
+    >
+      G3
+    </button>
+
+    <button
+      type="button"
+      class="criterion-card__grade"
+      (click)="setGuetestufe('NZ')"
+      [class.active]="getGuetestufe() === 'NZ' || !getGuetestufe()"
+    >
+      NZ
+    </button>
+
+    @if (getGuetestufe()) {
+      <span class="criterion-card__grade-current">
+    Gespeichert: {{ getGuetestufe() }}
+  </span>
+    }
+
+  </div>
+
   <div class="criterion-card__divider"></div>
 
   <ul class="criterion-card__req-list">
     @for (req of criterion?.anforderungen ?? []; track req.id) {
       <li class="criterion-card__req-item">
         <label class="criterion-card__req-label">
-          <input
-            class="criterion-card__checkbox"
-            type="checkbox"
-          >
+          <input class="criterion-card__checkbox" type="checkbox">
           <span class="criterion-card__req-text">
             <span class="criterion-card__req-number">{{ req.number }}.</span>
             {{ req.text }}
@@ -26,16 +71,18 @@
       </li>
     }
   </ul>
+
   <div>
-  <textarea
-    class="criterion-card__comment"
-    placeholder="Kommentar"
-    [(ngModel)]="comment"
-  ></textarea>
+    <textarea
+      class="criterion-card__comment"
+      placeholder="Kommentar"
+      [(ngModel)]="comment"
+    ></textarea>
 
     <button
       class="criterion-card__submit"
       (click)="saveComment()"
+      type="button"
     >
       Speichern
     </button>
