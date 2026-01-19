@@ -1,1 +1,33 @@
-<p>calculate-grade works!</p>
+@if (isLoading()) {
+  <section class="calculate-grade__section">
+    <h2 class="calculate-grade__title">Mutmassliche Note</h2>
+    <div class="calculate-grade__note">Laedt…</div>
+  </section>
+} @else {
+  <section class="calculate-grade__section">
+    <h2 class="calculate-grade__title">Mutmassliche Note</h2>
+
+    <div class="calculate-grade__note">
+      @if (grade() !== null) { {{ grade() }} } @else { – }
+    </div>
+
+    <div class="calculate-grade__divider"></div>
+
+    <div class="calculate-grade__points">
+      Kriterien: <span class="calculate-grade__chip">{{ totals().criteriaCount }}</span>
+      Punkte: <span class="calculate-grade__chip">{{ totals().reached }}/{{ totals().max }}</span>
+    </div>
+
+    <ul class="calculate-grade__list">
+      @for (c of perCriterion(); track c.criterionId) {
+        <li class="calculate-grade__item">
+          <span class="calculate-grade__item-name">{{ c.name }}</span>
+          <div class="calculate-grade__item-meta">
+            <span class="calculate-grade__chip">{{ c.guetestufe }}</span>
+            <span class="calculate-grade__chip">{{ c.points }}/3</span>
+          </div>
+        </li>
+      }
+    </ul>
+  </section>
+}

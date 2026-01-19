@@ -34,7 +34,6 @@
     "minG1": 1,
     "minG2": 2,
     "minG3": 3,
-    "minG4": 4,
     "anforderungen": [
       {
         "id": 1,
@@ -52,12 +51,6 @@
         "id": 3,
         "number": 3,
         "text": "BEISPIEL: Dritte Anforderung",
-        "isComplete": false
-      },
-      {
-        "id": 4,
-        "number": 4,
-        "text": "BEISPIEL: Vierte Anforderung",
         "isComplete": false
       }
     ]

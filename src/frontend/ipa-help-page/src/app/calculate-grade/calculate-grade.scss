@@ -1,0 +1,131 @@
+.calculate-grade {
+  margin: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ===== Abschnitt (Teil 1 / Teil 2) ===== */
+.calculate-grade__section {
+  background-color: #567e29;
+  color: #ffffff;
+  margin: 16px 20px;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px #00000026;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ===== Titel ===== */
+.calculate-grade__title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* ===== Note ===== */
+.calculate-grade__note {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  background-color: #ffffff1f;
+  border: 1px solid #ffffff1f;
+  padding: 8px 14px;
+  border-radius: 12px;
+
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+
+  width: fit-content;
+}
+
+/* ===== Divider ===== */
+.calculate-grade__divider {
+  height: 1px;
+  background-color: #ffffff1f;
+  margin: 4px 0;
+}
+
+/* ===== Kriterienliste ===== */
+.calculate-grade__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ===== Einzelnes Kriterium ===== */
+.calculate-grade__item {
+  background-color: #ffffff12;
+  border: 1px solid #ffffff1f;
+  border-radius: 12px;
+  padding: 10px 12px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ===== Text links ===== */
+.calculate-grade__item-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* ===== Werte rechts ===== */
+.calculate-grade__item-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ===== Chips ===== */
+.calculate-grade__chip {
+  background-color: #ffffff1f;
+  border: 1px solid #ffffff1f;
+  padding: 6px 10px;
+  border-radius: 10px;
+
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* ===== Gütestufen-Farben (dezent) ===== */
+.calculate-grade__chip--g0 {
+  opacity: 0.5;
+}
+
+.calculate-grade__chip--g1 {
+  background-color: rgba(255, 193, 7, 0.25); /* gelb */
+}
+
+.calculate-grade__chip--g2 {
+  background-color: rgba(23, 162, 184, 0.25); /* blau */
+}
+
+.calculate-grade__chip--g3 {
+  background-color: rgba(40, 167, 69, 0.25); /* grün */
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 700px) {
+  .calculate-grade__item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .calculate-grade__item-meta {
+    align-self: flex-end;
+  }
+}
