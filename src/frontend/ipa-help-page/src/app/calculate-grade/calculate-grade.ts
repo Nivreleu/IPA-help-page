@@ -1,13 +1,11 @@
-import { Component, Input, inject, computed } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
+import { IpaService } from '../service/ipa.service';
+import { GradeService, Guetestufe } from '../service/grade-service';
 
-type Criterion = {
-  id: string;
-  teil: 1 | 2; // falls du Teil 1/2 getrennt willst, sonst kannst du das ignorieren
-  anforderungen: { id: string }[];
-};
+type GueteNum = 0 | 1 | 2 | 3;
 
 @Component({
   selector: 'app-calculate-grade',
@@ -15,69 +13,75 @@ type Criterion = {
   templateUrl: './calculate-grade.html',
   styleUrl: './calculate-grade.scss',
 })
-export class CalculateGrade {
+export class CalculateGrade implements OnInit {
   private route = inject(ActivatedRoute);
+  private ipaService = inject(IpaService);
+  private gradeService = inject(GradeService);
 
-  // Kriterien vom Parent geben (oder per Service laden)
-  @Input() criteria: Criterion[] = [];
+  criteria = signal<any[]>([]);
+  isLoading = signal(true);
 
   username = toSignal(
     this.route.paramMap.pipe(map(p => p.get('username') ?? 'unknown')),
     { initialValue: 'unknown' }
   );
 
-  private readCheckedReqIds(criterionId: string): string[] {
-    const key = `ipahelp:reqs:${this.username()}:${criterionId}`;
-    try {
-      const raw = localStorage.getItem(key);
-      return raw ? (JSON.parse(raw) as string[]) : [];
-    } catch {
-      return [];
-    }
+  ngOnInit() {
+    this.isLoading.set(true);
+
+    this.ipaService.getExampleCriteria().subscribe({
+      next: (data: any) => {
+        this.criteria.set(data ?? []);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('ERROR loading criteria:', err);
+        this.criteria.set([]);
+        this.isLoading.set(false);
+      },
+    });
   }
 
-  /** Summe erreicht / max (über alle Kriterien) */
-  total = computed(() => {
-    let reached = 0;
-    let max = 0;
+  private gueteToNumber(g: Guetestufe | null): GueteNum {
+    if (g === 'G1') return 1;
+    if (g === 'G2') return 2;
+    if (g === 'G3') return 3;
+    return 0; // NZ oder null
+  }
 
-    for (const c of this.criteria) {
-      const checked = this.readCheckedReqIds(c.id).length;
-      reached += checked;
-      max += c.anforderungen?.length ?? 0;
-    }
+  perCriterion = computed(() => {
+    const user = this.username();
+    const stored = this.gradeService.getAllGrades(user); // Record<criterionId, Guetestufe>
 
-    return { reached, max };
+    // ✅ ALLE Kriterien aus dem Service (auch wenn nicht geklickt)
+    return this.criteria().map(c => {
+      const id = c.id;
+      const g = stored[id] ?? null;
+
+      return {
+        criterionId: id,
+        name: c.name ?? id,
+        guetestufe: g ?? 'NZ',
+        points: this.gueteToNumber(g),
+      };
+    });
   });
 
-  /** Note = (reached * 5) / max + 1 */
+  totals = computed(() => {
+    const list = this.perCriterion();
+    const criteriaCount = list.length;
+
+    const reached = list.reduce((acc, c) => acc + c.points, 0);
+    const max = criteriaCount * 3;
+
+    return { criteriaCount, reached, max };
+  });
+
   grade = computed(() => {
-    const { reached, max } = this.total();
+    const { reached, max } = this.totals();
     if (max === 0) return null;
 
-    const note = (reached * 5) / max + 1;
-    return Math.round(note * 10) / 10; // 0.1 runden (optional)
-  });
-
-  /** Falls du Teil 1/2 getrennt willst: */
-  totalTeil = (teil: 1 | 2) => computed(() => {
-    let reached = 0;
-    let max = 0;
-
-    for (const c of this.criteria.filter(x => x.teil === teil)) {
-      reached += this.readCheckedReqIds(c.id).length;
-      max += c.anforderungen?.length ?? 0;
-    }
-
-    return { reached, max };
-  });
-
-  gradeTeil = (teil: 1 | 2) => computed(() => {
-    const { reached, max } = this.totalTeil(teil)();
-    if (max === 0) return null;
     const note = (reached * 5) / max + 1;
     return Math.round(note * 10) / 10;
   });
-
-
 }

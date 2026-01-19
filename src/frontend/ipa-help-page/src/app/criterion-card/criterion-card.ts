@@ -18,11 +18,14 @@ export class CriterionCard implements OnChanges {
   comment = '';
   showSuccess = signal(false);
 
-  // ✅ NEU: req.id -> true/false
   checkedReqs = signal<Record<string, boolean>>({});
 
   private gradeService = inject(GradeService);
   private route = inject(ActivatedRoute);
+
+  showGradeHint = signal(false);
+
+  private gradeHintTimer?: number;
 
   username = toSignal(
     this.route.paramMap.pipe(
@@ -31,21 +34,14 @@ export class CriterionCard implements OnChanges {
     { initialValue: 'unknown' }
   );
 
-  /* ===============================
-     Keys (zentral)
-     =============================== */
   private commentKey() {
     return `ipahelp:comment:${this.username()}:${this.criterion.id}`;
   }
 
-  // ✅ NEU: Key für Checkboxen
   private reqsKey() {
     return `ipahelp:reqs:${this.username()}:${this.criterion.id}`;
   }
 
-  /* ===============================
-     Input-Lifecycle: laden wenn criterion da ist
-     =============================== */
   ngOnChanges(changes: SimpleChanges) {
     if (changes['criterion'] && this.criterion?.id) {
       this.loadComment();
@@ -53,9 +49,6 @@ export class CriterionCard implements OnChanges {
     }
   }
 
-  /* ===============================
-     GÜTESTUFE SPEICHERN
-     =============================== */
   setGuetestufe(grade: Guetestufe) {
     if (!this.criterion?.id) return;
 
@@ -64,6 +57,13 @@ export class CriterionCard implements OnChanges {
       this.criterion.id,
       grade
     );
+
+    this.showGradeHint.set(true);
+
+    if (this.gradeHintTimer) window.clearTimeout(this.gradeHintTimer);
+    this.gradeHintTimer = window.setTimeout(() => {
+      this.showGradeHint.set(false);
+    }, 2000);
   }
 
   getGuetestufe(): Guetestufe | null {
@@ -75,9 +75,6 @@ export class CriterionCard implements OnChanges {
     );
   }
 
-  /* ===============================
-     KOMMENTAR SPEICHERN / LADEN
-     =============================== */
   saveComment() {
     if (!this.criterion?.id) return;
 
@@ -92,9 +89,6 @@ export class CriterionCard implements OnChanges {
     this.comment = stored ?? '';
   }
 
-  /* ===============================
-     ✅ CHECKBOXEN SPEICHERN / LADEN
-     =============================== */
 
   // Wird bei (change) der Checkbox aufgerufen
   toggleReq(reqId: string, checked: boolean) {

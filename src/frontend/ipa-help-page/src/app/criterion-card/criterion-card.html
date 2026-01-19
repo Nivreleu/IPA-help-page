@@ -2,13 +2,6 @@
   <h2 class="criterion-card__title">{{ criterion?.name }}</h2>
   <p class="criterion-card__desc">{{ criterion?.description }}</p>
 
-  <div class="criterion-card__mins">
-    <span>G1: {{ criterion?.minG1 }}</span>
-    <span>G2: {{ criterion?.minG2 }}</span>
-    <span>G3: {{ criterion?.minG3 }}</span>
-  </div>
-
-  <!-- NEU: Auswahl erreichte Guetestufe -->
   <div class="criterion-card__grade-row">
     <span class="criterion-card__grade-label">Erreicht:</span>
 
@@ -18,7 +11,7 @@
       (click)="setGuetestufe('G1')"
       [class.active]="getGuetestufe() === 'G1'"
     >
-      G1
+      G1: 1P
     </button>
 
     <button
@@ -27,7 +20,7 @@
       (click)="setGuetestufe('G2')"
       [class.active]="getGuetestufe() === 'G2'"
     >
-      G2
+      G2: 2P
     </button>
 
     <button
@@ -36,7 +29,7 @@
       (click)="setGuetestufe('G3')"
       [class.active]="getGuetestufe() === 'G3'"
     >
-      G3
+      G3: 3P
     </button>
 
     <button
@@ -45,10 +38,10 @@
       (click)="setGuetestufe('NZ')"
       [class.active]="getGuetestufe() === 'NZ' || !getGuetestufe()"
     >
-      NZ
+      Nicht gesetzt
     </button>
 
-    @if (getGuetestufe()) {
+    @if (showGradeHint()) {
       <span class="criterion-card__grade-current">
     Gespeichert: {{ getGuetestufe() }}
   </span>
