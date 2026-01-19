@@ -62,7 +62,12 @@
     @for (req of criterion?.anforderungen ?? []; track req.id) {
       <li class="criterion-card__req-item">
         <label class="criterion-card__req-label">
-          <input class="criterion-card__checkbox" type="checkbox">
+          <input
+            class="criterion-card__checkbox"
+            type="checkbox"
+            [ngModel]="isReqChecked(req.id)"
+            (ngModelChange)="toggleReq(req.id, $event)"
+          >
           <span class="criterion-card__req-text">
             <span class="criterion-card__req-number">{{ req.number }}.</span>
             {{ req.text }}

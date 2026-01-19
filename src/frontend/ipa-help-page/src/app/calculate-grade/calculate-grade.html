@@ -1,1 +1,13 @@
-<p>calculate-grade works!</p>
+<section class="calculate-grade__section">
+  <h2 class="calculate-grade__title">Mutmassliche Note</h2>
+
+  <div class="calculate-grade__note">
+    @if (grade() !== null) { {{ grade() }} } @else { – }
+  </div>
+
+  <div class="calculate-grade__divider"></div>
+
+  <div class="calculate-grade__points">
+    Punkte: <span class="calculate-grade__chip">{{ total().reached }}/{{ total().max }}</span>
+  </div>
+</section>
